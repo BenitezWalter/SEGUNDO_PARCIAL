@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  servidor:
+    container_name: express-poder-judicial
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - databasesql
+      - databasemongo
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/server
+    networks:
+      - red-poder-judicial
+
+  databasesql:
+    image: mysql:8.0.33
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_DATABASE: test1db
+    ports:
+      - 3306:3306
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - red-poder-judicial
+
+  databasemongo:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - red-poder-judicial
+
+volumes:
+  db-data:
+  mongo-data:
+
+networks:
+  red-poder-judicial:
+
